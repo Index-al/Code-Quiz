@@ -100,8 +100,27 @@ function nextQuestion() {
         // Quiz is complete, do something (e.g., show score)
         quiz.innerHTML = '<p>Quiz complete! Your score is: </p> <h3>' + timerCount + '</h3>';
         timerEl.classList.add('hidden');
+        saveScoreToLocalStorage();
         timerInterval = clearInterval(timerInterval);
     }
+}
+
+function saveScoreToLocalStorage() {
+    var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
+
+    // Add the current score to the highscores array
+    allScores.push(timerCount);
+
+    // Sort the highscores in descending order
+    allScores.sort((a, b) => b - a);
+
+    // Only display the top 10 scores
+    allScores = allScores.slice(0, 10);
+
+    // Save the scores to local storage
+    localStorage.setItem("allScores", JSON.stringify(allScores));
+
+    console.log("Score saved to local storage: " + timerCount);
 }
 
 // Event listeners for button clicks
@@ -143,5 +162,26 @@ function startTimer() {
 
 // Function to view high scores
 function viewHighScores() {
-  // TODO: Add code to view high scores
+  var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
+
+  // Display the high scores
+  highscores.classList.remove('hidden');
+
+  // Clear the main page content
+    mainPageContent.innerHTML = '';
+    highscores.innerHTML = '<h2>High Scores:</h2>';
+
+    // Create the high scores list element
+    var highScoresList = document.createElement('ul');
+
+    // Iterate through the high scores and create list items
+    allScores.forEach(function (score) {
+        var scoreListItem = document.createElement('li');
+        scoreListItem.textContent = score;
+
+        highScoresList.appendChild(scoreListItem);
+    });
+
+    // Append the high scores list to the main page content
+    highscores.appendChild(highScoresList);
 }
