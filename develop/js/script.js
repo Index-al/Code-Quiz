@@ -8,6 +8,7 @@ var highScoresBtn = document.getElementById("high-scores");
 var mainPageContent = document.getElementById("mainPageContent");
 var timerInterval;
 var timerCount = 60;
+var currentQuestionIndex = 0;
 
 // Questions
 var questions = [
@@ -19,15 +20,53 @@ var questions = [
     // TODO: Add more questions
 ];
 
+function displayQuestion() {
+    // Remove the 'hidden' class from the quiz container
+    quiz.classList.remove('hidden');
+
+    // Get the current question object
+    var currentQuestion = questions[currentQuestionIndex];
+
+    // Create the question text element
+    var questionTextElement = document.createElement('p');
+    questionTextElement.textContent = currentQuestion.questionText;
+
+    // Create the answer choices list element
+    var answerChoicesList = document.createElement('ul');
+
+    // Iterate through answer choices and create list items
+    currentQuestion.answerChoices.forEach(function (choice) {
+        var choiceListItem = document.createElement('li');
+        choiceListItem.textContent = choice;
+
+        // Add a click event listener to each choice item
+        choiceListItem.addEventListener('click', function () {
+            // TODO: Handle user's choice selection
+        });
+
+        answerChoicesList.appendChild(choiceListItem);
+    });
+
+    // Clear existing content in the quiz container
+    quiz.innerHTML = '';
+
+    // Append the question text and answer choices to the quiz container
+    quiz.appendChild(questionTextElement);
+    quiz.appendChild(answerChoicesList);
+}
+
+
 // Event listeners for button clicks
 startBtn.addEventListener("click", startQuiz);
 highScoresBtn.addEventListener("click", viewHighScores);
 
 // Function to start the quiz
 function startQuiz() {
+    // Hide the main page content
     mainPageContent.classList.add('hidden');
     // Start the timer
     startTimer();
+    displayQuestion();
 
     // TODO: Add code to start the quiz
 }
