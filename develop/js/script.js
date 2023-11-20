@@ -7,7 +7,7 @@ var startBtn = document.getElementById("start");
 var highScoresBtn = document.getElementById("high-scores");
 var mainPageContent = document.getElementById("mainPageContent");
 var timerInterval;
-var timerCount = 60;
+var timerCount = 30;
 var currentQuestionIndex = 0;
 
 // Questions
@@ -65,11 +65,11 @@ function displayQuestion() {
             // Check if the answer is correct
             if (selectedAnswer === currentQuestion.correctAnswer) {
                 if (currentQuestionIndex < questions.length) {
-                    timerCount = timerCount + 10;
+                    timerCount = timerCount + 5;
                 }
                 console.log("Correct answer selected. Moving to the next question.");
             } else {
-                timerCount = timerCount - 10;
+                timerCount = timerCount - 5;
                 console.log("Incorrect answer selected. Moving to the next question.");
             }
             
@@ -115,8 +115,6 @@ function startQuiz() {
     // Start the timer
     startTimer();
     displayQuestion();
-
-    // TODO: Add code to start the quiz
 }
 
 // Function to start the timer
@@ -136,8 +134,9 @@ function startTimer() {
     if (timerCount <= 0) {
       // Stop the timer
       clearInterval(timerInterval);
-
-      // TODO: Add code to end the quiz
+      quiz.innerHTML = '<p>Quiz complete! Your score is: </p> <h3>' + timerCount + '</h3>';
+      timerEl.classList.add('hidden');
+      timerInterval = clearInterval(timerInterval);
     }
   }, 1000);
 }
