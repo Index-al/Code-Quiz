@@ -5,10 +5,16 @@ console.log("Script loaded");
 var timerEl = document.getElementById("timer");
 var startBtn = document.getElementById("start");
 var highScoresBtn = document.getElementById("high-scores");
+var backBtn = document.getElementById("back");
 var mainPageContent = document.getElementById("mainPageContent");
 var timerInterval;
 var timerCount = 30;
 var currentQuestionIndex = 0;
+
+// Event listeners for button clicks
+startBtn.addEventListener("click", startQuiz);
+highScoresBtn.addEventListener("click", viewHighScores);
+backBtn.addEventListener("click", goBack)
 
 // Questions
 var questions = [
@@ -38,6 +44,11 @@ var questions = [
         correctAnswer: "console.log"
     }
 ];
+
+// "Back" button
+function goBack() {
+    location.reload(); // TODO: Make back button more versatile
+}
 
 function displayQuestion() {
     // Remove the 'hidden' class from the quiz container
@@ -127,14 +138,12 @@ function saveScoreToLocalStorage() {
     console.log("Score saved to local storage: " + timerCount);
 }
 
-// Event listeners for button clicks
-startBtn.addEventListener("click", startQuiz);
-highScoresBtn.addEventListener("click", viewHighScores);
 
 // Function to start the quiz
 function startQuiz() {
     // Hide the main page content
     mainPageContent.classList.add('hidden');
+    backBtn.classList.remove('hidden');
 
     // Reset things for a new quiz
     timerCount = 30;
@@ -176,6 +185,7 @@ function viewHighScores() {
 
   // Display the high scores
   highscores.classList.remove('hidden');
+  backBtn.classList.remove('hidden');
 
   // Clear the main page content and display HS content
     mainPageContent.innerHTML = '';

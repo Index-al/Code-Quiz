@@ -97,6 +97,12 @@ button {
   cursor: pointer;
 }
 
+button#back {
+  position:absolute;
+  top: 2%;
+  left: 4%;
+}
+
 /* Used to hide page elements */
 .hidden {
     display: none;
