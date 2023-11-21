@@ -10,11 +10,14 @@ var mainPageContent = document.getElementById("mainPageContent");
 var timerInterval;
 var timerCount = 30;
 var currentQuestionIndex = 0;
+var initialsInput = document.getElementById("initials");
+var submitInitialsBtn = document.getElementById("submitInitials");
 
 // Event listeners for button clicks
 startBtn.addEventListener("click", startQuiz);
 highScoresBtn.addEventListener("click", viewHighScores);
 backBtn.addEventListener("click", goBack)
+submitInitialsBtn.addEventListener('click', submitInitials);
 
 // Questions
 var questions = [
@@ -115,29 +118,66 @@ function nextQuestion() {
 
 // Function to end the quiz
 function endQuiz() {
-    quiz.innerHTML = '<p>Quiz complete! Your score is: </p> <h3>' + timerCount + '</h3>';
+    // Clear existing content in the quiz container
+    quiz.innerHTML = '';
+
+    // Display the final score
+    var scoreElement = document.createElement('h3');
+    scoreElement.textContent = 'Your final score is: ' + timerCount;
+    quiz.appendChild(scoreElement);
+
+    // Show the submit button and initials input after the quiz is complete
+    submitInitialsBtn.classList.remove('hidden');
+    initialsInput.classList.remove('hidden');
+
+    // Append the initials input and submit button to the quiz container
+    quiz.appendChild(initialsInput);
+    quiz.appendChild(submitInitialsBtn);
+
+    // Hide the timer
     timerEl.classList.add('hidden');
-    saveScoreToLocalStorage();
+
+    // Stop the timer
     clearInterval(timerInterval);
 }
 
-// Function to save the score to local storage
-function saveScoreToLocalStorage() {
-    var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
 
-    // Add the current score to the highscores array
-    allScores.push(timerCount);
 
-    // Sort the highscores in descending order
-    allScores.sort((a, b) => b - a);
 
-    // Only display the top 10 scores
-    allScores = allScores.slice(0, 10);
+// Function to submit initials and score
+function submitInitials() {
+    var userInitials = initialsInput.value.toUpperCase();
+    if (userInitials.length > 0) {
+        // Save the user initials and score
+        var scoreData = {
+            initials: userInitials,
+            score: timerCount
+        };
 
-    // Save the scores to local storage
-    localStorage.setItem("allScores", JSON.stringify(allScores));
+        // Retrieve the high scores from local storage
+        var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
 
-    console.log("Score saved to local storage: " + timerCount);
+        // Add the current score to the highscores array
+        allScores.push(scoreData);
+
+        // Sort the highscores in descending order
+        allScores.sort((a, b) => b.score - a.score);
+
+        // Only display the top 10 scores
+        allScores = allScores.slice(0, 10);
+
+        // Save the scores to local storage
+        localStorage.setItem("allScores", JSON.stringify(allScores));
+
+        // Hide the submit button and initials input
+        submitInitialsBtn.classList.add('hidden');
+        initialsInput.classList.add('hidden');
+
+        // Display the high scores
+        viewHighScores();
+    } else {
+        alert("Please enter your initials.");
+    }
 }
 
 
@@ -218,27 +258,38 @@ function startTimer() {
 
 // Function to view high scores
 function viewHighScores() {
-  var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
-
-  // Display the high scores
-  highscores.classList.remove('hidden');
-  backBtn.classList.remove('hidden');
-
-  // Clear the main page content and display HS content
+    var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
+  
+    // Display the high scores
+    highscores.classList.remove('hidden');
+    backBtn.classList.remove('hidden');
+  
+    // Clear the main page content and display HS content
     mainPageContent.innerHTML = '';
+    quiz.innerHTML = '';
     highscores.innerHTML = '<h2>High Scores:</h2>';
-
+  
     // Create the high scores list element
     var highScoresList = document.createElement('ul');
-
+  
     // Iterate through the high scores and create list items
-    allScores.forEach(function (score) {
+    allScores.forEach(function (score, index) {
         var scoreListItem = document.createElement('li');
-        scoreListItem.textContent = score;
-
+    
+        // Add a special class for the header
+        if (index === 0) {
+            scoreListItem.classList.add('header');
+            // Display header
+            scoreListItem.innerHTML = '<span>Rank</span><span>Initials</span><span>Score</span>';
+        } else {
+            // Display place, initials, and score
+            scoreListItem.innerHTML = '<span>' + index + '</span><span>' + score.initials + '</span><span>' + score.score + '</span>';
+        }
+    
         highScoresList.appendChild(scoreListItem);
     });
-
+  
     // Append the high scores list to the main page content
     highscores.appendChild(highScoresList);
+    
 }

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Test your knowledge with the Javascript Quiz">
     <title>Javascript Quiz</title>
     <!-- Initialize CSS sheet -->
     <link rel="stylesheet" href="./develop/css/style.css">
@@ -11,9 +12,9 @@
     <!-- Header content -->
     <h1>Javascript Quiz</h1>
     <!-- Back button -->
-    <button id="back" class="hidden">Back</button>
+    <button id="back" class="hidden" aria-label="Go back">Back</button>
     <!-- Main content -->
-    <div id = "mainPageContent">
+    <div id="mainPageContent">
         <p>Welcome to the Javascript Quiz! Click on Start to begin, or view the high-scores!</p>
         <!-- Start button -->
         <button id="start">Start</button>
@@ -21,9 +22,11 @@
         <button id="high-scores">High-Scores</button>
     </div>
     <!-- Quiz content -->
-    <div id = "quiz" class="hidden"></div>
+    <div id="quiz" class="hidden"></div>
+    <input type="text" id="initials" placeholder="Enter your initials here!" maxlength="3" class="hidden" aria-label="Enter your initials">
+    <button id="submitInitials" class="hidden" aria-label="Submit Score">Submit Score</button>
     <!-- High scores content -->
-    <div id = "highscores" class="hidden"></div>
+    <div id="highscores" class="hidden"></div>
     <!-- Timer -->
     <span id="timer"></span>
     <!-- Main footer -->
