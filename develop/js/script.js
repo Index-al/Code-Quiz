@@ -1,7 +1,7 @@
 // Make sure the script is loaded
 console.log("Script loaded");
 
-// Variables
+// Initialize variables
 var timerEl = document.getElementById("timer");
 var startBtn = document.getElementById("start");
 var highScoresBtn = document.getElementById("high-scores");
@@ -88,23 +88,27 @@ function displayQuestion() {
     quiz.appendChild(answerChoicesList);
 }
 
+// Function to move onto the next question
 function nextQuestion() {
-    // Increment the current question index
     currentQuestionIndex++;
 
-    // Check if there are more questions
     if (currentQuestionIndex < questions.length) {
-        // Display the next question
         displayQuestion();
     } else {
-        // Quiz is complete, do something (e.g., show score)
-        quiz.innerHTML = '<p>Quiz complete! Your score is: </p> <h3>' + timerCount + '</h3>';
-        timerEl.classList.add('hidden');
-        saveScoreToLocalStorage();
-        timerInterval = clearInterval(timerInterval);
+        // Quiz is complete, show score
+        endQuiz();
     }
 }
 
+// Function to end the quiz
+function endQuiz() {
+    quiz.innerHTML = '<p>Quiz complete! Your score is: </p> <h3>' + timerCount + '</h3>';
+    timerEl.classList.add('hidden');
+    saveScoreToLocalStorage();
+    clearInterval(timerInterval);
+}
+
+// Function to save the score to local storage
 function saveScoreToLocalStorage() {
     var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
 
@@ -131,6 +135,12 @@ highScoresBtn.addEventListener("click", viewHighScores);
 function startQuiz() {
     // Hide the main page content
     mainPageContent.classList.add('hidden');
+
+    // Reset things for a new quiz
+    timerCount = 30;
+    currentQuestionIndex = 0;
+    timerEl.classList.remove('hidden');
+
     // Start the timer
     startTimer();
     displayQuestion();
@@ -167,7 +177,7 @@ function viewHighScores() {
   // Display the high scores
   highscores.classList.remove('hidden');
 
-  // Clear the main page content
+  // Clear the main page content and display HS content
     mainPageContent.innerHTML = '';
     highscores.innerHTML = '<h2>High Scores:</h2>';
 

@@ -62,7 +62,9 @@ p {
 #highscores h2 {
     text-align: center;
     padding: 10px;
-    font-size: 25px;
+    font-size: 35px;
+    color:#007bff;
+    text-shadow: black 3px 3px 3px 3px;
 }
 
 #highscores ul {
