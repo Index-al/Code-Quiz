@@ -124,6 +124,7 @@ function endQuiz() {
     // Display the final score
     var scoreElement = document.createElement('h3');
     scoreElement.textContent = 'Your final score is: ' + timerCount;
+    scoreElement.id = 'userScore'; // Add an ID to identify the user's score
     quiz.appendChild(scoreElement);
 
     // Show the submit button and initials input after the quiz is complete
@@ -172,6 +173,12 @@ function submitInitials() {
         // Hide the submit button and initials input
         submitInitialsBtn.classList.add('hidden');
         initialsInput.classList.add('hidden');
+
+        // Find the user's score element and highlight it
+        var userScoreElement = document.getElementById('userScore');
+        if (userScoreElement) {
+            userScoreElement.style.backgroundColor = 'yellow';
+        }
 
         // Display the high scores
         viewHighScores();
