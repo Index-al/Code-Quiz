@@ -77,10 +77,12 @@ function displayQuestion() {
             if (selectedAnswer === currentQuestion.correctAnswer) {
                 if (currentQuestionIndex < questions.length) {
                     timerCount = timerCount + 5;
+                    updateScore();
                 }
                 console.log("Correct answer selected. Moving to the next question.");
             } else {
                 timerCount = timerCount - 5;
+                updateScore();
                 console.log("Incorrect answer selected. Moving to the next question.");
             }
             
@@ -150,15 +152,50 @@ function startQuiz() {
     currentQuestionIndex = 0;
     timerEl.classList.remove('hidden');
 
-    // Start the timer
-    startTimer();
-    displayQuestion();
+    // Display the countdown more prominently
+    timerEl.style.fontSize = '3em'; // Increase font size
+    timerEl.style.color = 'red'; // Change text color
+    timerEl.style.position = 'absolute';
+    timerEl.style.top = '10%';
+    timerEl.style.left = '50%';
+
+    // Display the countdown
+    timerEl.textContent = '3';
+    setTimeout(function () {
+        timerEl.textContent = '2';
+        setTimeout(function () {
+            timerEl.textContent = '1';
+            setTimeout(function () {
+                // Reset styles
+                timerEl.style.fontSize = '';
+                timerEl.style.color = '';
+                timerEl.style.position = '';
+                timerEl.style.top = '';
+                timerEl.style.left = '';
+
+                // Update the score display
+                updateScore();
+
+                // Start the timer and display the first question
+                startTimer();
+                displayQuestion();
+            }, 1000);
+        }, 1000);
+    }, 1000);
 }
+
+// Function to update the score display
+function updateScore() {
+    timerEl.textContent = 'Score: ' + timerCount;
+}
+
+
+
 
 // Function to start the timer
 function startTimer() {
   // Display the initial timer value
-  timerEl.textContent = timerCount;
+  updateScore();
 
   // Start the timer interval
   timerInterval = setInterval(function () {
@@ -166,7 +203,7 @@ function startTimer() {
     timerCount--;
 
     // Update the timer display
-    timerEl.textContent = timerCount;
+    updateScore();
 
     // Check if the timer has reached 0
     if (timerCount <= 0) {
