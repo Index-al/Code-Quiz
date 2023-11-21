@@ -12,6 +12,7 @@ var timerCount = 30;
 var currentQuestionIndex = 0;
 var initialsInput = document.getElementById("initials");
 var submitInitialsBtn = document.getElementById("submitInitials");
+var lastScore;
 
 // Event listeners for button clicks
 startBtn.addEventListener("click", startQuiz);
@@ -155,6 +156,12 @@ function submitInitials() {
             score: timerCount
         };
 
+        // Log the last score in console
+        lastScore = scoreData.initials + " - " + scoreData.score;
+        console.log("Last score: " + lastScore);
+        
+        lastScore = scoreData.initials + scoreData.score;
+
         // Retrieve the high scores from local storage
         var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
 
@@ -165,7 +172,7 @@ function submitInitials() {
         allScores.sort((a, b) => b.score - a.score);
 
         // Only display the top 10 scores
-        allScores = allScores.slice(0, 10);
+        allScores = allScores.slice(0, 11);
 
         // Save the scores to local storage
         localStorage.setItem("allScores", JSON.stringify(allScores));
@@ -173,12 +180,6 @@ function submitInitials() {
         // Hide the submit button and initials input
         submitInitialsBtn.classList.add('hidden');
         initialsInput.classList.add('hidden');
-
-        // Find the user's score element and highlight it
-        var userScoreElement = document.getElementById('userScore');
-        if (userScoreElement) {
-            userScoreElement.style.backgroundColor = 'yellow';
-        }
 
         // Display the high scores
         viewHighScores();
@@ -299,4 +300,18 @@ function viewHighScores() {
     // Append the high scores list to the main page content
     highscores.appendChild(highScoresList);
     
+    // Check if any scores match lastScore, if so make them yellow
+    var scoreListItems = document.querySelectorAll('li');
+    console.log('Current last score: ' + lastScore);
+
+    scoreListItems.forEach(function (item, index) {
+        console.log('Cycling through list: ' + item.textContent);
+    
+    // Check if the item's text content starts with the index followed by lastScore
+    if (item.textContent.startsWith(index + lastScore)) {
+        item.style.backgroundColor = 'yellow';
+    }
+});
+
+
 }
