@@ -89,6 +89,12 @@ p {
   width: 30%;
 }
 
+#highscores ul li div {
+  width: 30%;
+  font-weight: 600;
+  font-size: 28px;
+}
+
 #highscores ul li.header {
   font-weight: bold;
   color: #333;

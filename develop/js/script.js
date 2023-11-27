@@ -157,10 +157,9 @@ function submitInitials() {
         };
 
         // Log the last score in console
-        lastScore = scoreData.initials + " - " + scoreData.score;
+        lastScore = scoreData.initials + '-' + scoreData.score;
         console.log("Last score: " + lastScore);
-        
-        lastScore = scoreData.initials + scoreData.score;
+
 
         // Retrieve the high scores from local storage
         var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
@@ -267,51 +266,101 @@ function startTimer() {
 // Function to view high scores
 function viewHighScores() {
     var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
-  
+
     // Display the high scores
     highscores.classList.remove('hidden');
     backBtn.classList.remove('hidden');
-  
+
+    // Log all scores in console
+    console.log('All Scores:', allScores);
+    
     // Clear the main page content and display HS content
     mainPageContent.innerHTML = '';
     quiz.innerHTML = '';
-    highscores.innerHTML = '<h2>High Scores:</h2>';
-  
+    highscores.innerHTML = '<h2>High Scores: </h2>\n\n<ul><li><div>Rank</div><div>Initials</div><div>Score</div></li></ul>';
+
     // Create the high scores list element
     var highScoresList = document.createElement('ul');
-  
-    // Iterate through the high scores and create list items
-    allScores.forEach(function (score, index) {
-        var scoreListItem = document.createElement('li');
-    
-        // Add a special class for the header
-        if (index === 0) {
-            scoreListItem.classList.add('header');
-            // Display header
-            scoreListItem.innerHTML = '<span>Rank</span><span>Initials</span><span>Score</span>';
-        } else {
+
+    // Check if there are no scores available
+    if (allScores.length === 0) {
+        var noScoresMessage = document.createElement('span');
+        noScoresMessage.textContent = 'No scores available yet.';
+        highScoresList.appendChild(noScoresMessage);
+    } else {
+        // Iterate through the high scores and create list items
+        allScores.forEach(function (score, index) {
+            var scoreListItem = document.createElement('li');
             // Display place, initials, and score
-            scoreListItem.innerHTML = '<span>' + index + '</span><span>' + score.initials + '</span><span>' + score.score + '</span>';
-        }
-    
-        highScoresList.appendChild(scoreListItem);
-    });
-  
+            scoreListItem.innerHTML = '<span>' + (index + 1) + '</span><span>' + score.initials + '</span><span>' + score.score + '</span>';
+            highScoresList.appendChild(scoreListItem);
+        });
+    }
+
     // Append the high scores list to the main page content
     highscores.appendChild(highScoresList);
-    
+
     // Check if any scores match lastScore, if so make them yellow
     var scoreListItems = document.querySelectorAll('li');
     console.log('Current last score: ' + lastScore);
 
     scoreListItems.forEach(function (item, index) {
         console.log('Cycling through list: ' + item.textContent);
+
+        // Check if the item's text content starts with the index followed by lastScore
+        if (item.textContent.startsWith((index + 1) + '-' + lastScore)) {
+            item.style.backgroundColor = 'yellow';
+        }
+    });
+}
+
+
+// Clear high scores if the 'd' AND 'e' AND 'l' keys are pressed in any order
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'd' || event.key === 'e' || event.key === 'l') {
+        // Set the key press as true
+        if (event.key === 'd') {
+            dPressed = true;
+            console.log('D pressed: ' + dPressed);
+        } else if (event.key === 'e') {
+            ePressed = true;
+            console.log('E pressed: ' + ePressed);
+        } else if (event.key === 'l') {
+            lPressed = true;
+            console.log('L pressed: ' + lPressed);
+        }
     
-    // Check if the item's text content starts with the index followed by lastScore
-    if (item.textContent.startsWith(index + lastScore)) {
-        item.style.backgroundColor = 'yellow';
+        // Check if all keys have been pressed
+        if (dPressed && ePressed && lPressed) {
+            // Clear the high scores
+            localStorage.removeItem("allScores");
+            console.log('High scores cleared.');
+
+            mainPageContent.innerHTML = '';
+            quiz.innerHTML = '';
+            highscores.innerHTML = '';
+    
+            // Create error message for when the key is pressed
+            var errorMessage = document.createElement('p');
+            errorMessage.innerHTML = 'You have cleared the high scores!<br><br>Refreshing page...';
+            errorMessage.style.color = 'red';
+            errorMessage.style.fontWeight = 'bold';
+            errorMessage.style.textAlign = 'center';
+            errorMessage.style.marginTop = '10px';
+            errorMessage.style.marginBottom = '10px';
+            errorMessage.style.fontSize = '1.5em';
+            errorMessage.style.fontFamily = 'sans-serif';
+            errorMessage.style.textTransform = 'uppercase';
+            errorMessage.id = 'errorMessage';
+
+            // Append the error message to the main page content
+            mainPageContent.appendChild(errorMessage);
+
+            // Remove the error message after 2 seconds
+            setTimeout(function () {
+                mainPageContent.removeChild(errorMessage);
+                location.reload();
+            }, 3000);
+        }
     }
 });
-
-
-}
