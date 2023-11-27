@@ -33,7 +33,9 @@ The JavaScript Quiz is designed to test your knowledge of JavaScript fundamental
 
 ## Screenshots
 
-![Screenshot](path-to-screenshot.png)
+![Menu](./assets/images/quiz-menu.png)
+![Game](./assets/images/quiz-game.png)
+![Highscores](./assets/images/quiz-hs.png)
 
 ## How It Works
 
