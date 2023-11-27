@@ -13,6 +13,7 @@ var currentQuestionIndex = 0;
 var initialsInput = document.getElementById("initials");
 var submitInitialsBtn = document.getElementById("submitInitials");
 var lastScore;
+var answerSelected = false;
 
 // Event listeners for button clicks
 startBtn.addEventListener("click", startQuiz);
@@ -75,33 +76,83 @@ function displayQuestion() {
 
         // Add a click event listener to each choice item
         choiceListItem.addEventListener('click', function () {
-        var selectedAnswer = choice; // The text content of the clicked choice
+            // Check if an answer has already been selected
+            if (answerSelected) {
+                return;
+            }
 
-    // Check if the answer is correct
-    if (selectedAnswer === currentQuestion.correctAnswer) {
-        if (currentQuestionIndex < questions.length) {
-            timerCount = timerCount + 5;
-            updateScore();
-        }
-        console.log("Correct answer selected. Moving to the next question.");
+            // Set the variable to true to indicate an answer has been selected
+            answerSelected = true;
 
-        // Provide visual feedback for a correct answer (e.g., change the background color)
-        choiceListItem.style.backgroundColor = 'green';
-    } else {
-        timerCount = timerCount - 5;
-        updateScore();
-        console.log("Incorrect answer selected. Moving to the next question.");
+            // Pause the timer
+            clearInterval(timerInterval);
 
-        // Provide visual feedback for an incorrect answer (e.g., change the background color)
-        choiceListItem.style.backgroundColor = 'red';
-    }
+            var selectedAnswer = choice; // The text content of the clicked choice
 
-    // Move onto the next question
-    nextQuestion();
-});
+            // Check if the answer is correct
+            if (selectedAnswer === currentQuestion.correctAnswer) {
+                if (currentQuestionIndex < questions.length) {
+                    timerCount = timerCount + 5;
+                    updateScore();
+                }
+                console.log("Correct answer selected.");
 
-answerChoicesList.appendChild(choiceListItem);
+                // Provide visual feedback for a correct answer
+                choiceListItem.style.backgroundColor = 'green';
 
+                // Wait 1 second before moving onto the next question
+                setTimeout(function () {
+                    choiceListItem.style.backgroundColor = '';
+                    // Move onto the next question
+                    nextQuestion();
+                    // Reset the variable to allow selecting a new answer
+                    answerSelected = false;
+                    // Restart the timer after the delay
+                    timerInterval = setInterval(function () {
+                        timerCount--;
+                        updateScore();
+                        timerEl.textContent = timerCount;
+
+                        // Check if the timer has reached 0
+                        if (timerCount <= 0) {
+                            clearInterval(timerInterval);
+                            endQuiz();
+                        }
+                    }, 1000);
+                }, 1000);
+            } else {
+                timerCount = timerCount - 5;
+                updateScore();
+                console.log("Incorrect answer selected.");
+
+                // Provide visual feedback for an incorrect answer
+                choiceListItem.style.backgroundColor = 'red';
+
+                // Wait 1 second before moving onto the next question
+                setTimeout(function () {
+                    choiceListItem.style.backgroundColor = '';
+                    // Move onto the next question
+                    nextQuestion();
+                    // Reset the variable to allow selecting a new answer
+                    answerSelected = false;
+                    // Restart the timer after the delay
+                    timerInterval = setInterval(function () {
+                        timerCount--;
+                        updateScore();
+                        timerEl.textContent = timerCount;
+
+                        // Check if the timer has reached 0
+                        if (timerCount <= 0) {
+                            clearInterval(timerInterval);
+                            endQuiz();
+                        }
+                    }, 1000);
+                }, 1000);
+            }
+        });
+
+        // Append the choice list item to the answer choices list
+        answerChoicesList.appendChild(choiceListItem);
     });
 
     // Clear existing content in the quiz container
@@ -240,9 +291,6 @@ function startQuiz() {
 function updateScore() {
     timerEl.textContent = 'Score: ' + timerCount;
 }
-
-
-
 
 // Function to start the timer
 function startTimer() {
