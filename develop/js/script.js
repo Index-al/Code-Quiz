@@ -75,26 +75,33 @@ function displayQuestion() {
 
         // Add a click event listener to each choice item
         choiceListItem.addEventListener('click', function () {
-            var selectedAnswer = choice; // The text content of the clicked choice
+        var selectedAnswer = choice; // The text content of the clicked choice
 
-            // Check if the answer is correct
-            if (selectedAnswer === currentQuestion.correctAnswer) {
-                if (currentQuestionIndex < questions.length) {
-                    timerCount = timerCount + 5;
-                    updateScore();
-                }
-                console.log("Correct answer selected. Moving to the next question.");
-            } else {
-                timerCount = timerCount - 5;
-                updateScore();
-                console.log("Incorrect answer selected. Moving to the next question.");
-            }
-            
-            // Move onto the next question
-            nextQuestion();
-        });
+    // Check if the answer is correct
+    if (selectedAnswer === currentQuestion.correctAnswer) {
+        if (currentQuestionIndex < questions.length) {
+            timerCount = timerCount + 5;
+            updateScore();
+        }
+        console.log("Correct answer selected. Moving to the next question.");
 
-        answerChoicesList.appendChild(choiceListItem);
+        // Provide visual feedback for a correct answer (e.g., change the background color)
+        choiceListItem.style.backgroundColor = 'green';
+    } else {
+        timerCount = timerCount - 5;
+        updateScore();
+        console.log("Incorrect answer selected. Moving to the next question.");
+
+        // Provide visual feedback for an incorrect answer (e.g., change the background color)
+        choiceListItem.style.backgroundColor = 'red';
+    }
+
+    // Move onto the next question
+    nextQuestion();
+});
+
+answerChoicesList.appendChild(choiceListItem);
+
     });
 
     // Clear existing content in the quiz container
@@ -156,10 +163,8 @@ function submitInitials() {
             score: timerCount
         };
 
-        // Log the last score in console
-        lastScore = scoreData.initials + '-' + scoreData.score;
-        console.log("Last score: " + lastScore);
-
+        // Initialize the lastScore variable
+        lastScore = scoreData.initials + scoreData.score;
 
         // Retrieve the high scores from local storage
         var allScores = JSON.parse(localStorage.getItem("allScores")) || [];
@@ -171,7 +176,7 @@ function submitInitials() {
         allScores.sort((a, b) => b.score - a.score);
 
         // Only display the top 10 scores
-        allScores = allScores.slice(0, 11);
+        allScores = allScores.slice(0, 10);
 
         // Save the scores to local storage
         localStorage.setItem("allScores", JSON.stringify(allScores));
@@ -305,15 +310,18 @@ function viewHighScores() {
     console.log('Current last score: ' + lastScore);
 
     scoreListItems.forEach(function (item, index) {
-        console.log('Cycling through list: ' + item.textContent);
+        console.log('Cycling through list: ' + item.textContent.substring(1));
 
         // Check if the item's text content starts with the index followed by lastScore
-        if (item.textContent.startsWith((index + 1) + '-' + lastScore)) {
+        if (item.textContent.substring(1).startsWith(lastScore)) {
             item.style.backgroundColor = 'yellow';
+            item.style.fontWeight = 'bold';
+            console.log(item.textContent.substring(1) + ' is a match!');
+        } else {
+            console.log(item.textContent.substring(1) + ' is not a match.');
         }
     });
 }
-
 
 // Clear high scores if the 'd' AND 'e' AND 'l' keys are pressed in any order
 document.addEventListener('keydown', function (event) {
