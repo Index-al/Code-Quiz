@@ -55,6 +55,7 @@ function goBack() {
     location.reload(); // TODO: Make back button more versatile
 }
 
+// Primary logic for quiz
 function displayQuestion() {
     // Remove the 'hidden' class from the quiz container
     quiz.classList.remove('hidden');
@@ -177,6 +178,16 @@ function nextQuestion() {
 
 // Function to end the quiz
 function endQuiz() {
+    // Clear any pending timeouts
+    for (var i = 0; i < setTimeout.length; i++) {
+        clearTimeout(setTimeout[i]);
+    }
+
+    // Clear any pending intervals
+    for (var i = 0; i < setInterval.length; i++) {
+        clearInterval(setInterval[i]);
+    }
+
     // Clear existing content in the quiz container
     quiz.innerHTML = '';
 
@@ -195,14 +206,12 @@ function endQuiz() {
     quiz.appendChild(submitInitialsBtn);
 
     // Hide the timer
-    timerEl.classList.add('hidden');
+    // timerEl.classList.add('hidden'); //COMMENTED OUT FOR DEBUGGING
 
     // Stop the timer
     clearInterval(timerInterval);
+    timerInterval = null;
 }
-
-
-
 
 // Function to submit initials and score
 function submitInitials() {
